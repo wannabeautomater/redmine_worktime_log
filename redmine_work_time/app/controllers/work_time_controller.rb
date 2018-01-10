@@ -49,6 +49,8 @@ class WorkTimeController < ApplicationController
     update_daily_memo(params[:memo]) if params.key?(:memo)
     set_holiday
     @custom_fields = TimeEntryCustomField.all
+    # チケットのカスタムフィールド参照
+    @issues_custom_fields = IssueCustomField.all
     @link_params.merge!(:action=>"show")
     if !params.key?(:user) then
       redirect_to @link_params
