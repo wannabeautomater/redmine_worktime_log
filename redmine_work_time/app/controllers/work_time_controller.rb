@@ -17,6 +17,7 @@ class WorkTimeController < ApplicationController
     prj_pos
     ticket_del
     hour_update
+    month_hour_update # [カスタマイズ] 月別工数を更新
     make_pack
     update_daily_memo(params[:memo]) if params.key?(:memo)
     set_holiday
@@ -47,6 +48,7 @@ class WorkTimeController < ApplicationController
     prj_pos
     ticket_del
     hour_update
+    month_hour_update # [カスタマイズ] 月別工数を更新
     make_pack
     member_add_del_check
     update_daily_memo(params[:memo]) if params.key?(:memo)
@@ -569,9 +571,16 @@ private
 
     @restrict_project = (params.key?(:prj) && params[:prj].to_i > 0) ? params[:prj].to_i : false
 
-    @first_date = Date.new(@display_year, @display_month, @account_start_day)
+    # 表示日付をユーザ選択可能に(us_fdate,us_ldateフィールド)
+     @first_date = Date.new(@display_year, @display_month, @account_start_day)
+    if (defined? params[:us_fdate]) then
+      @first_date = params["us_fdate"].nil? ? @first_date : Date.parse(params["us_fdate"])
+    end
     @last_date = (@first_date >> 1) - 1
-
+    if (defined? params[:us_ldate]) then
+      @last_date = params["us_ldate"].nil? ? @last_date : Date.parse(params["us_ldate"])
+    end
+    
     @month_names = l(:wt_month_names).split(',')
     @wday_name = l(:wt_week_day_names).split(',')
     @wday_color = ["#faa", "#eee", "#eee", "#eee", "#eee", "#eee", "#aaf"]
@@ -789,6 +798,81 @@ private
     end
   end
 
+  def month_hour_update # *********************************** 月別工数更新要求の処理
+    by_other = false
+    if @this_uid != @crnt_uid
+      if User.current.allowed_to?(:edit_work_time_other_member, @project)
+        by_other = true
+      else
+        return
+      end
+    end
+
+    # 月別新規工数の登録
+    if params["month_new_time_entry"] then
+      params["month_new_time_entry"].each do |issue_id, valss|
+        issue = Issue.find_by_id(issue_id)
+        next if issue.nil? || !issue.visible?
+        next if !User.current.allowed_to?(:log_time, issue.project)
+        valss.each do |date, vals|
+          tm_vals = vals.slice! "remaining_hours", "status_id"
+          tm_vals.merge!(params["month_new_time_entry_#{issue_id}_#{date}"]) if params.has_key?("month_new_time_entry_#{issue_id}_#{date}")
+          next if tm_vals["hours"].blank? && vals["remaining_hours"].blank? && vals["status_id"].blank?
+          if tm_vals["hours"].present? then
+            if !tm_vals[:activity_id] then
+              append_error_message_html(@message, 'Error: Issue'+issue_id+': No Activities!')
+              next
+            end
+            if by_other
+              append_text = "\n[#{Time.now.localtime.strftime("%Y-%m-%d %H:%M")}] #{User.current.to_s}"
+              append_text += " add time entry of ##{issue.id.to_s}: #{tm_vals[:hours].to_f}h"
+              update_daily_memo(append_text, true)
+            end
+            new_entry = TimeEntry.new(:project => issue.project, :issue => issue, :user => @this_user, :spent_on => date)
+            new_entry.safe_attributes = tm_vals
+            new_entry.save
+            append_error_message_html(@message, hour_update_check_error(new_entry, issue_id))
+          end
+          if vals["remaining_hours"].present? || vals["status_id"].present? then
+            append_error_message_html(@message, issue_update_to_remain_and_more(issue_id, vals))
+          end
+        end
+      end
+    end
+
+    # 月別既存工数の更新
+    if params["month_time_entry"] then
+      params["month_time_entry"].each do |id, vals|
+        tm = TimeEntry.find_by_id(id)
+        issue_id = tm.issue.id
+        tm_vals = vals.slice! "remaining_hours", "status_id"
+        tm_vals.merge!(params["month_time_entry_"+id.to_s]) if params.has_key?("month_time_entry_"+id.to_s)
+        if tm_vals["hours"].blank? then
+          # 工数指定が空文字の場合は工数項目を削除
+          if by_other
+            append_text = "\n[#{Time.now.localtime.strftime("%Y-%m-%d %H:%M")}] #{User.current.to_s}"
+            append_text += " delete time entry of ##{issue_id.to_s}: -#{tm.hours.to_f}h-"
+            update_daily_memo(append_text, true)
+          end
+          tm.destroy
+        else
+          if by_other && tm_vals.key?(:hours) && tm.hours.to_f != tm_vals[:hours].to_f
+            append_text = "\n[#{Time.now.localtime.strftime("%Y-%m-%d %H:%M")}] #{User.current.to_s}"
+            append_text += " update time entry of ##{issue_id.to_s}: -#{tm.hours.to_f}h- #{tm_vals[:hours].to_f}h"
+            update_daily_memo(append_text, true)
+          end
+          tm.safe_attributes = tm_vals
+          tm.save
+          append_error_message_html(@message, hour_update_check_error(tm, issue_id))
+        end
+        if vals["remaining_hours"].present? || vals["status_id"].present? then
+          append_error_message_html(@message, issue_update_to_remain_and_more(issue_id, vals))
+        end
+      end
+    end
+  end
+  
+    
   def issue_update_to_remain_and_more(issue_id, vals)
     issue = Issue.find_by_id(issue_id)
     return 'Error: Issue'+issue_id+': Private!' if issue.nil? || !issue.visible?

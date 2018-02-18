@@ -23,12 +23,12 @@
   <%end%>
 </div>
 
+<%= form_tag @link_params do %>
 <%= render :partial=>'user_month_table' %>
 
 <br/>
 <hr/>
 
-<%= form_tag @link_params do %>
     <h2>
       <%=l(:wt_daily_report)%>
       <%=@this_date.strftime("%Y-%m-%d")%>
