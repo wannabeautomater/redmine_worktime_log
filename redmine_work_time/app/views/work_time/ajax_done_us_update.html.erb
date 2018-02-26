@@ -1,0 +1,18 @@
+<%#
+# AjaxUpdateする
+%>
+<%if User.current.allowed_to?(:edit_issues, @issue.project)%>
+    <a name="<%=@item_name +@issue.id.to_s%>"
+       href="#"
+       class="wt_done_us"
+       data-issue="<%= @issue.id.to_s %>"
+       onclick="input_done_us(
+               '<%=url_for(@link_params.merge(:action=>"ajax_done_us_input"))%>',
+               <%=@issue.id.to_s%>,
+               '<%=@item_name %>');
+               return false;">
+      <%=@issue.fixed_version %>
+    </a>
+<%else%>
+    <%=@issue.fixed_version %>
+<%end%>

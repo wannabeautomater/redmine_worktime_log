@@ -53,7 +53,7 @@ function input_done_ratio(ajax_url, issue_id) {
     }
   });
 }
-
+z
 function update_done_ratio(ajax_url, issue_id) {
   var done_ratio = $('#input_ratio'+issue_id).val();
   jQuery.ajax({
@@ -61,6 +61,27 @@ function update_done_ratio(ajax_url, issue_id) {
     data:{asynchronous:true, method:'get'},
     success:function(response){
       jQuery('[name="done_ratio'+ issue_id+'"]').replaceWith(response);
+    }
+  });
+}
+
+function input_done_us(ajax_url, issue_id, item_name) {
+  jQuery.ajax({
+    url: ajax_url + "&issue_id=" + issue_id + "&item_name=" + item_name,
+    data: {asynchronous: true, method: 'get'},
+    success: function (response) {
+      jQuery('[name="'+ item_name + issue_id+'"]:first').replaceWith(response);
+    }
+  });
+}
+
+function update_done_us(ajax_url, issue_id, item_name) {
+  var item_value = $('#input_us'+issue_id).val();
+  jQuery.ajax({
+    url:ajax_url + "&issue_id=" + issue_id + "&" + item_name + "=" + item_value,
+    data:{asynchronous:true, method:'get'},
+    success:function(response){
+      jQuery('[name="'+ item_name + issue_id+'"]').replaceWith(response);
     }
   });
 }

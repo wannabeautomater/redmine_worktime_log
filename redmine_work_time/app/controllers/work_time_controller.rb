@@ -519,6 +519,41 @@ class WorkTimeController < ApplicationController
     render(:layout=>false)
   end
 
+   def ajax_done_us_input # ユーザー定義項目 更新ポップアップ
+    prepare_values
+    issue_id = params[:issue_id]
+    @item_name = params[:item_name]
+    @issue = Issue.find_by_id(issue_id)
+    @cstm_field = ""
+    if @item_name.include?("custom_field_values") then
+      cid = @item_name
+      cid = cid.gsub!(/custom_field_values|\[|\]/, '')
+      @cstm_field = @issue.custom_field_values.detect {|c| c.custom_field.id == cid}
+    else
+    end
+    if @issue.nil? || @issue.closed? || !@issue.visible? then
+      @issueHtml = "<del>"+@issue.to_s+"</del>"
+      @status_closed = true
+    else
+      @issueHtml = @issue.to_s
+    end
+    render(:layout=>false)
+  end
+
+  def ajax_done_us_update
+    prepare_values
+    issue_id = params[:issue_id]
+    @issue = Issue.find_by_id(issue_id)
+    @item_name = params[:item_name]
+    if User.current.allowed_to?(:edit_issues, @issue.project) then
+      @issue.init_journal(User.current)
+      issue_vals = params.slice!  @item_name
+      @issue.safe_attributes = issue_vals
+      @issue.save
+    end
+    render(:layout=>false)
+  end
+  
   def register_project_settings
     @message = ""
     require_login || return
@@ -584,7 +619,6 @@ private
     @month_names = l(:wt_month_names).split(',')
     @wday_name = l(:wt_week_day_names).split(',')
     @wday_color = ["#faa", "#eee", "#eee", "#eee", "#eee", "#eee", "#aaf"]
-
     @link_params = {:controller=>"work_time", :id=>@project,
                     :year=>year, :month=>month, :day=>day,
                     :user=>@this_uid, :prj=>@restrict_project}
@@ -791,7 +825,7 @@ private
           tm.save
           append_error_message_html(@message, hour_update_check_error(tm, issue_id))
         end
-        if vals["remaining_hours"].present? || vals["status_id"].present? then
+          if vals["remaining_hours"].present? || vals["status_id"].present? then
           append_error_message_html(@message, issue_update_to_remain_and_more(issue_id, vals))
         end
       end

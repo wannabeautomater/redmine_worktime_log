@@ -279,7 +279,7 @@ end
     });
     // 更新時に空欄かつ変更フラグオフの月別作業工数欄は排除する
     $('form').submit(function(){
-      $('input[name^="month_time_entry"][value=""][alt=""],input[name^="month_new_time_entry"][value=""][alt=""]').each(function(){
+      $('input[name^="month_time_entry"][alt!="changed"],input[name^="month_new_time_entry"][alt!="changed"]').each(function(){
         $(this).remove();
         $activity_id = (this.name).replace('hours','activity_id');
         $('input[name="' + $activity_id + '"]').remove();
@@ -290,7 +290,7 @@ end
     });
 
     // リンククリック時にカスタム抽出日付をクエリ保持する
-    $('a').each(function(){
+    $('a[href*="year="]').each(function(){
       $link = $(this).attr('href');
       $(this).attr('href',$link + '&us_fdate=' + $('input[name="us_fdate"]').val() + '&us_ldate=' + $('input[name="us_ldate"]').val());
     });
