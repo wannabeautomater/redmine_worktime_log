@@ -299,7 +299,6 @@ prj_pack[:odr_issues].each do |issue_pack|
         <%= issue.fixed_version.nil? ? "入力":issue.fixed_version %>
       </a>      
   <td>
-    <!--<%= cstm_field1.value.nil? ? "" : cstm_field1.value  %>-->
     <a name="<%='custom_field_values[2]'+issue_id.to_s%>"
        class="wt_done_us"
        data-issue="<%= issue_id %>"

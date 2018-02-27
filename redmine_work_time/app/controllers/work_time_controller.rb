@@ -524,12 +524,12 @@ class WorkTimeController < ApplicationController
     issue_id = params[:issue_id]
     @item_name = params[:item_name]
     @issue = Issue.find_by_id(issue_id)
-    @cstm_field = ""
     if @item_name.include?("custom_field_values") then
       cid = @item_name
       cid = cid.gsub!(/custom_field_values|\[|\]/, '')
       @cstm_field = @issue.custom_field_values.detect {|c| c.custom_field.id == cid}
     else
+      @cstm_field = ""
     end
     if @issue.nil? || @issue.closed? || !@issue.visible? then
       @issueHtml = "<del>"+@issue.to_s+"</del>"
@@ -543,8 +543,19 @@ class WorkTimeController < ApplicationController
   def ajax_done_us_update
     prepare_values
     issue_id = params[:issue_id]
+    item_value = params[:item_value]
     @issue = Issue.find_by_id(issue_id)
     @item_name = params[:item_name]
+    case  @item_name
+    when "fixed_version_id"
+      #@item_text = @issue.fixed_version
+      @item_text = @issue.assignable_versions.detect {|c| c.id == item_value}
+    when "custom_field_values[2]","custom_field_values[3]","custom_field_values[4]"
+      cstm_field = @issue.custom_field_values.detect {|c| c.custom_field.id == item_value}
+      @item_text = cstm_field.value
+    else
+      @item_text = ""
+    end
     if User.current.allowed_to?(:edit_issues, @issue.project) then
       @issue.init_journal(User.current)
       issue_vals = params.slice!  @item_name

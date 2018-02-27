@@ -1,16 +1,16 @@
 <div name="<%='done_us'+@issue.id.to_s%>">
 <form action="">
-  <% case @item_name
-    when "fixed_version_id" then  
-    select_name= "input_us" + @issue.id.to_s
-    select_tag select_name,
+  <% 
+    case @item_name
+    when "fixed_version_id" %>
+    <% select_name = "input_us" + @issue.id.to_s %>
+    <%= select_tag select_name,
                  version_options_for_select(@issue.assignable_versions, @issue.fixed_version),
                  :include_blank => true,
-                 :required => @issue.required_attribute?('fixed_version_id') 
-    when "custom_field_values[2]"  then
-    custom_field_tag "issue[" + @issue.id.to_s + "][0]", @cstm_field
-    else
-    ##
+                 :required => @issue.required_attribute?('fixed_version_id') %>
+    <% when "custom_field_values[2]","custom_field_values[3]","custom_field_values[4]" %>
+    <%= custom_field_tag "issue[" + @issue.id.to_s + "][0]", @cstm_field %>
+    <%  else
     end %>
   <input type="button"
          value="<%=l(:button_apply)%>"
