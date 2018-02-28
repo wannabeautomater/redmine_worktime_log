@@ -86,7 +86,8 @@ prj_pack[:odr_issues].each do |issue_pack|
 #  issue_class = issue_pack[:worked] ? "#cfc" : "#fff"
   issue_css_classes = issue_pack[:css_classes]
   issue = Issue.find_by_id(issue_id)
-  issue_html = wk_pretty_issue_name issue, issue_id
+  #issue_html = wk_pretty_issue_name issue, issue_id
+  issue_html = "#" + issue.id.to_s + " " + issue.subject
   if issue_pack[:each_entries].length==0 then
 %>
 <!-- 工数エントリなし -->
@@ -183,7 +184,7 @@ prj_pack[:odr_issues].each do |issue_pack|
                  '<%=issue_id%>',
                  'fixed_version_id');
                  return false;">
-        <%= issue.fixed_version.nil? ? "入力":issue.fixed_version %>
+        <%= issue.fixed_version.nil? ? "(入力)":issue.fixed_version %>
       </a>      
   <td>
     <!--<%= cstm_field1.value.nil? ? "" : cstm_field1.value  %>-->
@@ -196,7 +197,7 @@ prj_pack[:odr_issues].each do |issue_pack|
                '<%=issue_id%>',
                'custom_field_values[2]');
                return false;">
-      <%= cstm_field1.nil? ? "入力": cstm_field1.value.nil? ? "入力" :cstm_field1.value + "(入力)" %>
+      <%= cstm_field1.nil? ? "(入力)": cstm_field1.value.nil? ? "(入力)" :cstm_field1.value + "(入力)" %>
     </a>      
   </td>
   <td>
@@ -210,7 +211,7 @@ prj_pack[:odr_issues].each do |issue_pack|
                '<%=issue_id%>',
                'custom_field_values[3]');   
                return false;">
-      <%= cstm_field2.nil? ? "入力": cstm_field2.value.nil? ? "入力" :cstm_field2.value + "(入力)" %>
+      <%= cstm_field2.nil? ? "(入力)": cstm_field2.value.nil? ? "(入力)" :cstm_field2.value + "(入力)" %>
     </a>      
   </td>
   <td>
@@ -224,7 +225,7 @@ prj_pack[:odr_issues].each do |issue_pack|
                '<%=issue_id%>',
                'custom_field_values[4]');
                return false;">
-      <%= cstm_field3.nil? ? "入力": cstm_field3.value.nil? ? "入力" :cstm_field3.value + "(入力)" %>
+      <%= cstm_field3.nil? ? "(入力)": cstm_field3.value.nil? ? "(入力)" :cstm_field3.value + "(入力)" %>
     </a>      
   </td>
   <td>
@@ -339,7 +340,7 @@ prj_pack[:odr_issues].each do |issue_pack|
                  '<%=issue_id%>',
                  'fixed_version_id');
                  return false;">
-        <%= issue.fixed_version.nil? ? "入力":issue.fixed_version %>
+        <%= issue.fixed_version.nil? ? "(入力)":issue.fixed_version %>
       </a>      
   <td>
     <a name="<%='custom_field_values[2]'+issue_id.to_s%>"
@@ -351,7 +352,7 @@ prj_pack[:odr_issues].each do |issue_pack|
                '<%=issue_id%>',
                'custom_field_values[2]');
                return false;">
-      <%= cstm_field1.nil? ? "入力": cstm_field1.value.nil? ? "入力" :cstm_field1.value + "(入力)" %>
+      <%= cstm_field1.nil? ? "(入力)": cstm_field1.value.nil? ? "(入力)" :cstm_field1.value + "(入力)" %>
     </a>      
   </td>
   <td>
@@ -365,7 +366,7 @@ prj_pack[:odr_issues].each do |issue_pack|
                '<%=issue_id%>',
                'custom_field_values[3]');
                return false;">
-      <%= cstm_field2.nil? ? "入力": cstm_field2.value.nil? ? "入力" :cstm_field2.value + "(入力)" %>
+      <%= cstm_field2.nil? ? "(入力)": cstm_field2.value.nil? ? "(入力)" :cstm_field2.value + "(入力)" %>
     </a>      
   </td>
   <td>
@@ -379,7 +380,7 @@ prj_pack[:odr_issues].each do |issue_pack|
                '<%=issue_id%>',
                'custom_field_values[4]');
                return false;">
-      <%= cstm_field3.nil? ? "入力": cstm_field3.value.nil? ? "入力" :cstm_field3.value + "(入力)" %>
+      <%= cstm_field3.nil? ? "(入力)": cstm_field3.value.nil? ? "(入力)" :cstm_field3.value + "(入力)" %>
     </a>      
   </td>
   <td>

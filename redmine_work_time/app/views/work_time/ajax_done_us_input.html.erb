@@ -1,4 +1,4 @@
-<div name="<%='done_us'+@issue.id.to_s + @item_name %>">
+<div class="us_ajax_input" name="<%='done_us'+@issue.id.to_s + @item_name %>">
 <form action="">
   <% 
     case @item_name
@@ -12,7 +12,7 @@
     <%= custom_field_tag "input_us" + @issue.id.to_s + @item_name , @cstm_field %>
     <%  else
     end %>
-  <input class="us_ajax_button" style="float:right;" type="button"
+  <input style="float:right;" type="button"
          value="<%=l(:button_apply)%>"
          onclick="update_done_us('<%=url_for(@link_params.merge(:action=>"ajax_done_us_update"))%>',
                  <%=@issue.id.to_s%> ,
@@ -23,8 +23,11 @@
     $('*[name="<%=@item_name + @issue.id.to_s%>"]').focus();
 </script>
 <style type="text/css">
-    select[name^="input_us"],.us_ajax_button  {
-      font-size:90%;
-      padding: 1px;
+    .us_ajax_input{
+      padding: 10px;
+      position: absolute;
+      border-radius: 5px;
+      border:1px solid #aaa;
+      background-color: #ffffdd;
     }
 </style>

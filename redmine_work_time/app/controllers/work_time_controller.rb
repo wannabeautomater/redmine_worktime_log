@@ -553,9 +553,9 @@ class WorkTimeController < ApplicationController
       @issue.safe_attributes = params
       @issue.save
       if @item_name == "fixed_version_id" then
-        @item_text = params["fixed_version_id"]=="" ? "入力":@issue.fixed_version
+        @item_text = params["fixed_version_id"]=="" ? "(入力)":@issue.fixed_version
       else
-        @item_text = params[:custom_field_values].values[0]=="" ? "入力": params[:custom_field_values].values[0]
+        @item_text = params[:custom_field_values].values[0]=="" ? "(入力)": params[:custom_field_values].values[0]
       end
     end
     render(:layout=>false)
