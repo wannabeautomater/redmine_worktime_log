@@ -1,18 +1,18 @@
-<div name="<%='done_us'+@issue.id.to_s%>">
+<div name="<%='done_us'+@issue.id.to_s + @item_name %>">
 <form action="">
   <% 
     case @item_name
     when "fixed_version_id" %>
-    <% select_name = "input_us" + @issue.id.to_s %>
+    <% select_name = "input_us" + @issue.id.to_s + @item_name %>
     <%= select_tag select_name,
                  version_options_for_select(@issue.assignable_versions, @issue.fixed_version),
                  :include_blank => true,
                  :required => @issue.required_attribute?('fixed_version_id') %>
     <% when "custom_field_values[2]","custom_field_values[3]","custom_field_values[4]" %>
-    <%= custom_field_tag "issue[" + @issue.id.to_s + "][0]", @cstm_field %>
+    <%= custom_field_tag "input_us" + @issue.id.to_s + @item_name , @cstm_field %>
     <%  else
     end %>
-  <input type="button"
+  <input class="us_ajax_button" style="float:right;" type="button"
          value="<%=l(:button_apply)%>"
          onclick="update_done_us('<%=url_for(@link_params.merge(:action=>"ajax_done_us_update"))%>',
                  <%=@issue.id.to_s%> ,
@@ -22,3 +22,9 @@
 <script>
     $('*[name="<%=@item_name + @issue.id.to_s%>"]').focus();
 </script>
+<style type="text/css">
+    select[name^="input_us"],.us_ajax_button  {
+      font-size:90%;
+      padding: 1px;
+    }
+</style>

@@ -76,12 +76,12 @@ function input_done_us(ajax_url, issue_id, item_name) {
 }
 
 function update_done_us(ajax_url, issue_id, item_name) {
-  var item_value = $('#input_us'+issue_id).val();
+  var item_value = $('[name^="input_us' + issue_id + item_name + '"]').val();
   jQuery.ajax({
-    url:ajax_url + "&issue_id=" + issue_id + "&item_name=" + item_name +"&" + item_name + "=" +item_value,
+    url:ajax_url + "&issue_id=" + issue_id + "&item_name=" + item_name + "&" + item_name + "=" +item_value,
     data:{asynchronous:true, method:'get'},
     success:function(response){
-      jQuery('[name="'+ item_name + issue_id+'"]:first').replaceWith(response);
+      jQuery('div[name="done_us' + issue_id + item_name +'"]:first').replaceWith(response);
     }
   });
 }

@@ -174,15 +174,58 @@ prj_pack[:odr_issues].each do |issue_pack|
   </td>
   <td>
       <!--<%= issue.fixed_version %>-->
+      <a name="<%='fixed_version_id'+issue_id.to_s%>"
+         class="wt_done_us"
+         data-issue="<%= issue_id %>"
+         href="#"
+         onclick="input_done_us(
+                 '<%=url_for(@link_params.merge(:action=>"ajax_done_us_input"))%>',
+                 '<%=issue_id%>',
+                 'fixed_version_id');
+                 return false;">
+        <%= issue.fixed_version.nil? ? "入力":issue.fixed_version %>
+      </a>      
   <td>
     <!--<%= cstm_field1.value.nil? ? "" : cstm_field1.value  %>-->
-    <%= custom_field_tag "issue[" + issue.id.to_s + "][0]", cstm_field1 %>
+    <a name="<%='custom_field_values[2]'+issue_id.to_s%>"
+       class="wt_done_us"
+       data-issue="<%= issue_id %>"
+       href="#"
+       onclick="input_done_us(
+               '<%=url_for(@link_params.merge(:action=>"ajax_done_us_input"))%>',
+               '<%=issue_id%>',
+               'custom_field_values[2]');
+               return false;">
+      <%= cstm_field1.nil? ? "入力": cstm_field1.value.nil? ? "入力" :cstm_field1.value + "(入力)" %>
+    </a>      
   </td>
   <td>
-    <%= cstm_field2.value %>
+    <!--<%= cstm_field2.value %>-->
+    <a name="<%='custom_field_values[3]'+issue_id.to_s%>"
+       class="wt_done_us"
+       data-issue="<%= issue_id %>"
+       href="#"
+       onclick="input_done_us(
+               '<%=url_for(@link_params.merge(:action=>"ajax_done_us_input"))%>',
+               '<%=issue_id%>',
+               'custom_field_values[3]');   
+               return false;">
+      <%= cstm_field2.nil? ? "入力": cstm_field2.value.nil? ? "入力" :cstm_field2.value + "(入力)" %>
+    </a>      
   </td>
   <td>
-    <%= cstm_field3.value %>
+    <!--<%= cstm_field3.value %>-->
+    <a name="<%='custom_field_values[4]'+issue_id.to_s%>"
+       class="wt_done_us"
+       data-issue="<%= issue_id %>"
+       href="#"
+       onclick="input_done_us(
+               '<%=url_for(@link_params.merge(:action=>"ajax_done_us_input"))%>',
+               '<%=issue_id%>',
+               'custom_field_values[4]');
+               return false;">
+      <%= cstm_field3.nil? ? "入力": cstm_field3.value.nil? ? "入力" :cstm_field3.value + "(入力)" %>
+    </a>      
   </td>
   <td>
     <%= text_field_tag("new_time_entry["+issue_id.to_s+"][0][comments]", "", :size=>20)%>
@@ -308,14 +351,36 @@ prj_pack[:odr_issues].each do |issue_pack|
                '<%=issue_id%>',
                'custom_field_values[2]');
                return false;">
-      <%= cstm_field1.nil? ? "入力": cstm_field1.value.nil? ? "入力":cstm_field1.value %>
+      <%= cstm_field1.nil? ? "入力": cstm_field1.value.nil? ? "入力" :cstm_field1.value + "(入力)" %>
     </a>      
   </td>
   <td>
-    <%= cstm_field2.value %>
+    <%#= cstm_field2.value %>
+    <a name="<%='custom_field_values[3]'+issue_id.to_s%>"
+       class="wt_done_us"
+       data-issue="<%= issue_id %>"
+       href="#"
+       onclick="input_done_us(
+               '<%=url_for(@link_params.merge(:action=>"ajax_done_us_input"))%>',
+               '<%=issue_id%>',
+               'custom_field_values[3]');
+               return false;">
+      <%= cstm_field2.nil? ? "入力": cstm_field2.value.nil? ? "入力" :cstm_field2.value + "(入力)" %>
+    </a>      
   </td>
   <td>
-    <%= cstm_field3.value %>
+    <%#= cstm_field3.value %>
+    <a name="<%='custom_field_values[4]'+issue_id.to_s%>"
+       class="wt_done_us"
+       data-issue="<%= issue_id %>"
+       href="#"
+       onclick="input_done_us(
+               '<%=url_for(@link_params.merge(:action=>"ajax_done_us_input"))%>',
+               '<%=issue_id%>',
+               'custom_field_values[4]');
+               return false;">
+      <%= cstm_field3.nil? ? "入力": cstm_field3.value.nil? ? "入力" :cstm_field3.value + "(入力)" %>
+    </a>      
   </td>
   <td>
     <%= text_field_tag("time_entry["+hour_id.to_s+"][comments]", hour.comments, :size=>20)%>
