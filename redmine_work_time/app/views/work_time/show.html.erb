@@ -3,6 +3,26 @@
 
 <%= @message.html_safe %>
 <div class="contextual">
+    <%= submit_tag l(:wt_update) %>
+  &nbsp;
+  <input type="button"
+         onclick="location.href='<%=url_for(@link_params.merge(:this_week=>:back))%>'"
+         id="us_show_lastweek" 
+         value="前週" 
+         />
+  &nbsp;
+  <input type="button"
+         onclick="location.href='<%=url_for(@link_params.merge(:this_week=>:now))%>'"
+         id="us_show_thisweek" 
+         value="今週を表示" 
+         />
+  &nbsp;
+  <input type="button"
+         onclick="location.href='<%=url_for(@link_params.merge(:this_week=>:foward))%>'"
+         id="us_show_nextweek" 
+         value="次週" 
+         />
+  &nbsp;
 <%= render :partial=>'select_project' %>
 <%if User.current.allowed_to?(:view_work_time_other_member, @project) then%>
   <%= render :partial=>'select_user', :locals=>{:link_params=>@link_params} %>

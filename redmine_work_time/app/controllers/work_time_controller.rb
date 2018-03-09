@@ -613,14 +613,40 @@ class WorkTimeController < ApplicationController
 
     @restrict_project = (params.key?(:prj) && params[:prj].to_i > 0) ? params[:prj].to_i : false
 
-    # 表示日付をユーザ選択可能に(us_fdate,us_ldateフィールド)
-    @first_date = Date.new(@display_year, @display_month, @account_start_day)
-    if (defined? params[:us_fdate]) then
-      @first_date = params["us_fdate"].nil? ? @first_date : Date.parse(params["us_fdate"])
-    end
-    @last_date = (@first_date >> 1) - 1
-    if (defined? params[:us_ldate]) then
-      @last_date = params["us_ldate"].nil? ? @last_date : Date.parse(params["us_ldate"])
+    # 今週表示ならば月曜～日曜で表示
+    dt = Date.today
+    if params[:this_week].present? then
+      d1 = dt - (dt.wday - 1)
+      d2 = dt + (dt.wday - 3)
+      case params[:this_week]
+      when "now"
+        @first_date = d1
+        @last_date =  d2
+      when "back"
+        @first_date = d1 - (d2 - d1) - 1
+        @last_date =  d1 - 1
+      when "foward"
+        @first_date = d2 + 1
+        @last_date =  d2 + (d2 - d1) + 1
+      else
+        @first_date = Date.new(@display_year, @display_month, @account_start_day)
+        @last_date = (@first_date >> 1) - 1
+      end
+        @this_date = @first_date
+        @display_year = @first_date.year
+        @display_month = @first_date.month
+    else
+      # 表示日付をユーザ選択可能に(us_fdate,us_ldateフィールド)
+      if (defined? params[:us_fdate]) && (defined? params[:us_ldate]) then
+        @first_date = params["us_fdate"].nil? ? @first_date : Date.parse(params["us_fdate"])
+        @last_date = params["us_ldate"].nil? ? @last_date : Date.parse(params["us_ldate"])
+        @this_date = @first_date
+        @display_year = @first_date.year
+        @display_month = @first_date.month
+      else
+      @first_date = Date.new(@display_year, @display_month, @account_start_day)
+      @last_date = (@first_date >> 1) - 1
+      end
     end
     
     @month_names = l(:wt_month_names).split(',')
