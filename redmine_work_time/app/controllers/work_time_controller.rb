@@ -617,7 +617,7 @@ class WorkTimeController < ApplicationController
     dt = Date.today
     if params[:this_week].present? then
       d1 = dt - (dt.wday - 1)
-      d2 = dt + (dt.wday - 3)
+      d2 = dt + (7 - dt.wday)
       case params[:this_week]
       when "now"
         @first_date = d1
@@ -632,23 +632,23 @@ class WorkTimeController < ApplicationController
         @first_date = Date.new(@display_year, @display_month, @account_start_day)
         @last_date = (@first_date >> 1) - 1
       end
-        @this_date = @first_date
-        @display_year = @first_date.year
-        @display_month = @first_date.month
+      @this_date = @first_date
+      @display_year = @first_date.year
+      @display_month = @first_date.month
     else
       # 表示日付をユーザ選択可能に(us_fdate,us_ldateフィールド)
-      if (defined? params[:us_fdate]) && (defined? params[:us_ldate]) then
-        @first_date = params["us_fdate"].nil? ? @first_date : Date.parse(params["us_fdate"])
-        @last_date = params["us_ldate"].nil? ? @last_date : Date.parse(params["us_ldate"])
+      if (params[:us_fdate].present?) && (params[:us_ldate].present?) then
+        @first_date = Date.parse(params["us_fdate"])
+        @last_date = Date.parse(params["us_ldate"])
         @this_date = @first_date
         @display_year = @first_date.year
         @display_month = @first_date.month
       else
-      @first_date = Date.new(@display_year, @display_month, @account_start_day)
-      @last_date = (@first_date >> 1) - 1
+        @first_date = Date.new(@display_year, @display_month, @account_start_day)
+        @last_date = (@first_date >> 1) - 1
       end
     end
-    
+  
     @month_names = l(:wt_month_names).split(',')
     @wday_name = l(:wt_week_day_names).split(',')
     @wday_color = ["#faa", "#eee", "#eee", "#eee", "#eee", "#eee", "#aaf"]
@@ -657,11 +657,11 @@ class WorkTimeController < ApplicationController
       :user=>@this_uid, :prj=>@restrict_project}
     @is_registerd_backlog = false
     begin
-      Redmine::Plugin.find :redmine_backlogs
+      Redmine::P  lugin.find :redmine_backlogs
       @is_registerd_backlog = true
     rescue Exception => exception
     end
-  end
+end
 
   def ticket_pos
     return if @this_uid != @crnt_uid
