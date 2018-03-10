@@ -168,10 +168,33 @@ prj_pack[:odr_issues].each do |issue_pack|
     <% end %>
   </td>
   <td>
-    <%= issue.start_date %>
+    <!=-<%= issue.start_date %>-->
+    <a name="<%='start_date'+issue_id.to_s%>"
+       class="wt_done_us"
+       data-issue="<%= issue_id %>"
+       href="#"
+       onclick="input_done_us(
+               '<%=url_for(@link_params.merge(:action=>"ajax_done_us_input"))%>',
+               '<%=issue_id%>',
+               'start_date');
+               return false;">
+      <%= issue.start_date.nil? ? "(入力)":issue.start_date %>
+    </a>      
   </td>
   <td>
-    <%= issue.due_date %>
+    <!--<%= issue.due_date %>-->
+    <!--<%= issue.start_date %>-->
+    <a name="<%='due_date'+issue_id.to_s%>"
+       class="wt_done_us"
+       data-issue="<%= issue_id %>"
+       href="#"
+       onclick="input_done_us(
+               '<%=url_for(@link_params.merge(:action=>"ajax_done_us_input"))%>',
+               '<%=issue_id%>',
+               'due_date');
+               return false;">
+      <%= issue.due_date.nil? ? "(入力)":issue.due_date %>
+    </a>      
   </td>
   <td>
       <!--<%= issue.fixed_version %>-->
@@ -324,10 +347,32 @@ prj_pack[:odr_issues].each do |issue_pack|
     <% end %>
   </td>
   <td>
-    <%= issue.start_date %>
+    <!--<%= issue.start_date %>-->
+    <a name="<%='start_date'+issue_id.to_s%>"
+       class="wt_done_us"
+       data-issue="<%= issue_id %>"
+       href="#"
+       onclick="input_done_us(
+               '<%=url_for(@link_params.merge(:action=>"ajax_done_us_input"))%>',
+               '<%=issue_id%>',
+               'start_date');
+               return false;">
+      <%= issue.start_date.nil? ? "(入力)":issue.start_date %>
+    </a>      
   </td>
   <td>
-    <%= issue.due_date %>
+    <!--<%= issue.due_date %>-->
+    <a name="<%='due_date'+issue_id.to_s%>"
+       class="wt_done_us"
+       data-issue="<%= issue_id %>"
+       href="#"
+       onclick="input_done_us(
+               '<%=url_for(@link_params.merge(:action=>"ajax_done_us_input"))%>',
+               '<%=issue_id%>',
+               'due_date');
+               return false;">
+      <%= issue.due_date.nil? ? "(入力)":issue.due_date %>
+    </a>      
   </td>
   <td>
       <!--<%= issue.fixed_version %>-->

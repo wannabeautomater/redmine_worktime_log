@@ -554,6 +554,10 @@ class WorkTimeController < ApplicationController
       @issue.save
       if @item_name == "fixed_version_id" then
         @item_text = params["fixed_version_id"]=="" ? "(入力)":@issue.fixed_version
+      elsif @item_name == "start_date" then
+        @item_text = params["start_date"]=="" ? "(入力)":@issue.start_date
+      elsif @item_name == "due_date" then
+        @item_text = params["due_date"]=="" ? "(入力)":@issue.due_date
       else
         @item_text = params[:custom_field_values].values[0]=="" ? "(入力)": params[:custom_field_values].values[0]
       end
