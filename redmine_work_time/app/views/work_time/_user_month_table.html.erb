@@ -194,10 +194,23 @@ day_cost = 0
   if issue_pack[:total_by_day].has_key?(date) then
 %>
           <!-- div → inputに変更1 -->
-          <input type="text" alt="" value="<%=sprintf("%1.2f", issue_pack[:total_by_day][date])%>" class="m_time_entries" name="<%="month_time_entry[" + hour_id.to_s + "][hours]" %>" />
+          <input 
+              id ="<%=issue_id.to_s + " " + date.to_s %>"
+              type="text" 
+              alt="" 
+              value="<%=sprintf("%1.2f", issue_pack[:total_by_day][date])%>" 
+              class="m_time_entries" 
+              name="<%="month_time_entry[" + hour_id.to_s + "][hours]" %>" 
+              />
           <input type="hidden" value="8" name="<%="month_time_entry["+ hour_id.to_s + "][activity_id]" %>" />
 <%else%>
-          <input type="text" alt="" value="" class="m_time_entries" name="<%="month_new_time_entry["+ issue_id.to_s + "][" + date.to_s + "][hours]" %>" />
+          <input 
+              id ="<%=issue_id.to_s + " " + date.to_s %>"
+              type="text" 
+              alt="" value="" 
+              class="m_time_entries" 
+              name="<%="month_new_time_entry["+ issue_id.to_s + "][" + date.to_s + "][hours]" %>" 
+              />
           <input type="hidden" value="8" name="<%="month_new_time_entry["+ issue_id.to_s + "][" + date.to_s + "][activity_id]" %>" />
 <%end%>
         </div>
@@ -209,7 +222,7 @@ day_cost = 0
 %>
   <div style="position:absolute;top:<%=prj_ofst_t%>px;left:<%=ofst_l%>px;">
     <div style="background:#000;color:#fff;/*font-size:0.8em;*/">
-      <div class="month_day_total" style="text-align:center;position:relative;top:5px;left:1px;width:<%=win_w-1%>px;height:<%=win_hs-1%>px;">
+      <div id="<%= date.to_s %>" class="month_day_total" style="text-align:center;position:relative;top:5px;left:1px;width:<%=win_w-1%>px;height:<%=win_hs-1%>px;">
 <%if prj_pack[:total_by_day].has_key?(date) then%>
           <%=sprintf("%1.2f", prj_pack[:total_by_day][date])%>
 <%end%>
@@ -223,7 +236,7 @@ end
 <!--日毎の合計時間表示-->
     <div style="position:absolute;top:<%=win_hs*2%>px;left:<%=ofst_l%>px;">
       <div style="/*font-size:0.8em;*/">
-        <div class="month_day_total2 <%
+        <div id="<%= date.to_s %>" class="month_day_total2 <%
           if !(@month_pack[:total_by_day][date]).nil? then      
             if (@month_pack[:total_by_day][date]).to_i > 8.2 then
               printf('hour_red')
@@ -269,6 +282,13 @@ end
     // 月別作業工数欄の更新フラグイベントをバインド
     $('input[name^="month_time_entry"],input[name^="month_new_time_entry"]').change(function(){
       $(this).attr('alt','changed');
+      // 月別工数変更時に合計値を更新
+      $dt=this.id.split(' ')[1];
+      $total=0;
+      $('input.m_time_entries[id*="'+$dt+'"]').each(function(){
+        $total+=parseFloat($(this).val())>0?parseFloat($(this).val()):0; 
+      });
+      $('div[class*="month_day_total"][id$="'+$dt+'"]').text($total.toFixed(2));
     });
     
     // 月別作業工数の更新ボタン設定
