@@ -644,7 +644,8 @@ class WorkTimeController < ApplicationController
       if (params[:us_fdate].present?) && (params[:us_ldate].present?) then
         @first_date = Date.parse(params["us_fdate"])
         @last_date = Date.parse(params["us_ldate"])
-        @this_date = @first_date
+        # TODO 日別工数表の日付は強制しない
+        #@this_date = @first_date
         @display_year = @first_date.year
         @display_month = @first_date.month
       else
@@ -1464,6 +1465,10 @@ end
       else
         issue_pack[:css_classes] = 'wt_iss_worked'
       end
+      # TODO 月別にも工数ゼロのチケットを表示
+      prj_pack = make_pack_prj(@month_pack, issue.project)
+      issue_pack = make_pack_issue(prj_pack, issue)
+      # TODO ここまで
     end
     issues = Issue.
       joins("INNER JOIN issue_statuses ist on ist.id = issues.status_id ").
@@ -1489,6 +1494,10 @@ end
       elsif issue_pack[:css_classes] == 'wt_iss_overdue_worked'
         issue_pack[:css_classes] = 'wt_iss_assigned_overdue_worked'
       end
+      # TODO 月別にも工数ゼロのチケットを表示
+      prj_pack = make_pack_prj(@month_pack, issue.project)
+      issue_pack = make_pack_issue(prj_pack, issue)
+      # TODO ここまで
     end
 
     # 月間工数表から工数が無かった項目の削除と項目数のカウント
@@ -1496,7 +1505,8 @@ end
     @month_pack[:odr_prjs].each do |prj_pack|
       prj_pack[:odr_issues].each do |issue_pack|
         if issue_pack[:count_hours]==0 then
-          prj_pack[:count_issues] -= 1
+          # TODO 月別にも工数ゼロのチケットを表示
+          #prj_pack[:count_issues] -= 1
         end
       end
 
