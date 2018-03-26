@@ -39,7 +39,9 @@ ofst_t = win_hs*3-5
   prj_pack[:odr_issues].each do |issue_pack|
     # TODO 月別にも工数ゼロのチケットを表示
     #next if issue_pack[:count_hours] == 0
+    # TODO 工数ゼロで担当ではないチケットは非表示に
     issue = issue_pack[:issue]
+    next if !issue.nil? && !issue.assigned_to_id.nil? && @this_uid != issue.assigned_to_id && issue_pack[:count_hours] == 0
     issue_id = issue.nil? ? -1 : issue.id
     issue_odr = issue_pack[:odr]
 
@@ -180,6 +182,8 @@ day_cost = 0
     # TODO 月別にも工数ゼロのチケットを表示
     #next if issue_pack[:count_hours] == 0
     issue = issue_pack[:issue]
+    # TODO 工数ゼロで担当ではないチケットは非表示に
+    next if !issue.nil? && !issue.assigned_to_id.nil? && @this_uid != issue.assigned_to_id && issue_pack[:count_hours] == 0
     issue_id = issue.nil? ? -1 : issue.id
     issue_odr = issue_pack[:odr]
     # time_entriesテーブル参照
