@@ -662,7 +662,7 @@ class WorkTimeController < ApplicationController
       :user=>@this_uid, :prj=>@restrict_project}
     @is_registerd_backlog = false
     begin
-      Redmine::P  lugin.find :redmine_backlogs
+      Redmine::Plugin.find :redmine_backlogs
       @is_registerd_backlog = true
     rescue Exception => exception
     end

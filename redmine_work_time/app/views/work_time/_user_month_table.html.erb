@@ -198,14 +198,23 @@ day_cost = 0
         <div style="text-align:center;position:relative;top:5px;left:1px;width:<%=win_w-1%>px;height:<%=win_h-1%>px;">
 <%
   if issue_pack[:total_by_day].has_key?(date) then
+    # 担当者外のチケットに工数がついていれば緑色フラグを
+    if !issue.assigned_to_id.nil? && @this_uid != issue.assigned_to_id then
+      class_month = "m_time_entries month_green"
+      title_month="担当ではないチケットに工数が入っています。新たにチケットを作成して工数を付け直してください"
+    else  
+      class_month = "m_time_entries"
+      title_month=""
+    end
 %>
           <!-- div → inputに変更1 -->
           <input 
+              title="<%=title_month%>" 
               id ="<%=issue_id.to_s + " " + date.to_s %>"
               type="text" 
               alt="" 
               value="<%=sprintf("%1.2f", issue_pack[:total_by_day][date])%>" 
-              class="m_time_entries" 
+              class="<%=class_month%>"
               name="<%="month_time_entry[" + hour_id.to_s + "][hours]" %>" 
               />
           <input type="hidden" value="8" name="<%="month_time_entry["+ hour_id.to_s + "][activity_id]" %>" />
@@ -325,7 +334,7 @@ end
 </script>
 
 <style type="text/css">
-    input.m_time_entries {
+    .m_time_entries {
       display: block;
       border-color: #eee;
       top: -4px;
@@ -335,14 +344,17 @@ end
       width: 100%;
       height: 28px;
     }
-    input.us_date{
+    .us_date{
       border: none;
       font-size: 16px;
       font-weight: bold;
       background-color: transparent;
     }
-    div.hour_red  {
+    .hour_red  {
         background-color: #FF3333;
+    }
+    .month_green  {
+        background-color: lightgreen;
     }
     input[type="submit"][name="commit"]{
       background-color: orange;
